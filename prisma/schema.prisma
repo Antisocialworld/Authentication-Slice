@@ -1,0 +1,62 @@
+// Prisma schema for the Authentication Slice.
+// Scope note: behaviours 1 (create account + verify email) and 2 (sign in) are
+// built so far, so the schema has User, VerificationCode, and Session. The
+// password-reset table comes with behaviour 3. When behaviour 3 lands, add
+// PasswordResetToken here.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id              String    @id @default(cuid())
+  email           String    @unique
+  name            String
+  passwordHash    String
+  emailVerifiedAt DateTime?
+  createdAt       DateTime  @default(now())
+
+  verificationCodes VerificationCode[]
+  sessions          Session[]
+  passwordResetTokens PasswordResetToken[]
+}
+
+model VerificationCode {
+  id         String    @id @default(cuid())
+  userId     String
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  code       String
+  expiresAt  DateTime
+  usedAt     DateTime?
+  lastSentAt DateTime  @default(now())
+  createdAt  DateTime  @default(now())
+
+  @@index([userId])
+}
+
+model PasswordResetToken {
+  id        String    @id @default(cuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token     String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
+}
+
+model Session {
+  id        String   @id
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}
