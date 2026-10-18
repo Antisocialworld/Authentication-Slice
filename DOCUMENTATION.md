@@ -10,13 +10,13 @@ a verification screen to mark the email as verified. Every write goes through
 a typed route handler that re-validates the data and limits how fast it can be
 hammered.
 
-This pass deliberately stops at "email verified". Signing in, sessions,
-forgot/reset password, the protected dashboard, and the cookie machinery that
-keeps someone logged in are all part of PRD-001's later behaviours and are not
-built yet. The brief's "Do not build" list is respected as a hard boundary: no
-landing page, no marketing, no dashboard features, no profile editing, no
-social sign-in, no two-factor. Nothing exists in the app that is not part of,
-or directly in service of, the create-account-and-verify flow.
+This slice covers the full flow. Sign-up and email verification come first.
+Sign-in with database-backed sessions, forgot and reset password, and the
+protected dashboard follow, and all of it is walked through step by step in
+Section 3 (Steps 1 to 8). The brief's "Do not build" list is respected as a
+hard boundary: no landing page, no marketing, no dashboard features, no
+profile editing, no social sign-in, no two-factor. Nothing exists in the app
+that is not part of, or directly in service of, this flow.
 
 ## 2. How To Run It
 
